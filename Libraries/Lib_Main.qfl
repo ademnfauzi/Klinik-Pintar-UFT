@@ -1,0 +1,95 @@
+﻿Set objkey = CreateObject("WScript.Shell")
+Sub Login
+	Dim dtOpenBrowser, dtURL
+	
+	dtOpenBrowser	= DataTable.Value ("BROWSER", "SMS")
+	dtURL			= DataTable.Value ("KLINIK_PINTAR_URL", "SMS")
+	
+	Call fnOpenBrowser(dtOpenBrowser, dtURL)
+	
+	wait 5
+'	objkey.SendKeys "{ENTER}"
+	wait 3
+	objkey.SendKeys "{F5}"
+	wait 5
+	objkey.SendKeys "{F5}"
+	wait 3
+	
+	Browser("Login | Klinik OS").Page("Login | Klinik OS").WebEdit("Masukkan email / username").Set DataTable.Value("USERNAME",dtLocalSheet)
+	wait 1
+	Browser("Login | Klinik OS").Page("Login | Klinik OS").WebEdit("Masukkan password").Set DataTable.Value("PASSWORD",dtLocalSheet)
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Login | Klinik OS"), "Mengisi Username dan Password", "", compatibilityMode.Desktop, ReportStatus.Done)	
+	wait 2
+	Browser("Login | Klinik OS").Page("Login | Klinik OS").WebButton("Masuk").Click
+	wait 3
+	If Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Dashboard").Exist(5) Then
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Melakukan Login", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	Else
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Login | Klinik OS"), "Gagal Memasuki Halaman Melakukan Login", "", compatibilityMode.Desktop, ReportStatus.Failed)	
+	End If
+End  Sub
+
+
+Sub Logout
+	Browser("Login | Klinik OS").Page("Menu | Klinik OS").WebButton("Open options").Click
+	wait 1
+	Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Keluar").Click
+	wait 5
+	If Browser("Login | Klinik OS").Page("Login | Klinik OS").WebEdit("Masukkan email / username").Exist(5) Then
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Login | Klinik OS"), "Berhasil Melakukan Logout", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	Else
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Gagal Melakukan Logout", "", compatibilityMode.Desktop, ReportStatus.Failed)	
+	End If
+End Sub
+
+Sub Menu
+	dt_Menu = Ucase(DataTable.Value("MENU",dtLocalSheet))
+	wait 1
+	If dt_Menu = "RAWAT JALAN" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").WebButton("Rawat Jalan").Click
+		wait 1
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Menu Rawat Jalan", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		Call Sub_Menu()
+	ElseIf dt_Menu = "REKAM MEDIS" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").WebButton("Rekam Medis").Click
+		wait 1
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Menu Rekam Medis", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		Call Sub_Menu()
+	End If
+End Sub
+
+Sub Sub_Menu
+	dt_Sub_Menu = Ucase(DataTable.Value("SUB_MENU", dtLocalSheet))
+	
+	wait 1
+	If dt_Sub_Menu = "SEMUA STATUS" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Semua Status Rujukan Lab").Click
+		wait 3
+		If Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").Link("Semua Status").Exist(3) Then
+			Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Semua Status", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		Else
+			Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Gagal Membuka Sub Menu Semua Status", "", compatibilityMode.Desktop, ReportStatus.Failed)	
+		End If
+	ElseIf dt_Sub_Menu = "RESERVASI" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Reservasi Rujukan Lab").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf dt_Sub_Menu = "REGISTRASI" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Registrasi Rujukan Lab").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Registrasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf dt_Sub_Menu = "RESUME" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Resume").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Resume", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf dt_Sub_Menu = "PEMERIKSAAN" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Pemeriksaan Rujukan Lab").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Pemeriksaan", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf dt_Sub_Menu = "RUJUKAN LABORATORIUM" Then
+		Browser("Login | Klinik OS").Page("Menu | Klinik OS").Link("Rujukan Laboratorium Rujukan").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Berhasil Membuka Sub Menu Rujukan Laboratorium", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	End If
+End Sub

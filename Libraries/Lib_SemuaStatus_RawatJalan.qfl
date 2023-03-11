@@ -1,0 +1,156 @@
+﻿Sub Search_Pasien
+	wait 1
+	pasien = DataTable.Value("PASIEN",dtLocalSheet)
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Cari MRN, pasien, dokter - Filter").Set pasien
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Filter Berdasarkan Nama Pasien, Dokter atau MRN", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+End Sub
+
+Sub Search_NoVoucher
+	wait 1
+	nomor = DataTable.Value("NO_RUJUKAN_VOUCHER",dtLocalSheet)
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Cari no. rujukan - FIlter").Set nomor
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Filter Berdasarkan No Rujukan atau No Voucher", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+End Sub
+
+Sub Filter_Tipe_Pembayaran(tipe)
+	wait 1
+	tipe = Ucase(tipe)
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tipe Pembayaran").Click
+	wait 1
+	If tipe = "FILTER" Then
+		tipe_pembayaran = Ucase(DataTable.Value("TIPE_PEMBAYARAN",dtLocalSheet))
+		tipe_penjamin = Ucase(DataTable.Value("TIPE_PENJAMIN",dtLocalSheet))
+		wait 2
+		'Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebElement("Arrow Drop Down Tipe Pembayaran").Click
+		objkey.SendKeys "{TAB}"
+		wait 3
+		If tipe_pembayaran = "PRIBADI" Then
+			objkey.SendKeys "{DOWN}"
+			objkey.SendKeys "{ENTER}"
+		ElseIf tipe_pembayaran = "PENJAMIN" Then
+			objkey.SendKeys "{DOWN 2}"
+			objkey.SendKeys "{ENTER}"
+			wait 5
+			objkey.SendKeys "{TAB}"
+			If tipe_penjamin = "GARDA MEDIKA" Then
+				objkey.SendKeys "{DOWN}"
+				objkey.SendKeys "{ENTER}"
+			ElseIf tipe_penjamin = "KLINIK PINTAR" Then
+				objkey.SendKeys "{DOWN 2}"
+				objkey.SendKeys "{ENTER}"
+			ElseIf tipe_penjamin = "PT HILTI NUSANTARA" Then
+				objkey.SendKeys "{DOWN 3}"
+				wait 1
+				objkey.SendKeys "{ENTER}"
+			ElseIf tipe_penjamin = "BPJS KESEHATAN" Then
+				objkey.SendKeys "{DOWN 4}"
+				wait 1
+				objkey.SendKeys "{ENTER}"
+			ElseIf tipe_penjamin = "LAINNYA" Then
+				objkey.SendKeys "{DOWN 5}"
+				wait 1
+				objkey.SendKeys "{ENTER}"
+			End If
+		End If
+		wait 1
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Input Data Yang Ingin Di Filter", "", compatibilityMode.Desktop, ReportStatus.Done)	
+		wait 3
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Terapkan").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Semua Data Yang Telah Di Filter", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf tipe = "RESET" Then
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Reset").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Semua Data Yang Telah Di Reset", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	End If
+End Sub
+
+Sub Poliklinik_Filter()
+	wait 1
+	poliklinik = DataTable.Value("POLIKLINIK_FILTER",dtLocalSheet)
+'	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Poliklinik - Filter").Set poliklinik
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tipe Pembayaran").Click
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tipe Pembayaran").Click
+	wait 1
+	objkey.SendKeys "{TAB}"
+	wait 1
+	objkey.SendKeys (poliklinik)
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Melakukan Filter Berdasarkan Poliklinik", "", compatibilityMode.Desktop, ReportStatus.Done)	
+	wait 1
+	objkey.SendKeys "{DOWN}"
+	objkey.SendKeys "{ENTER}"
+	wait 3
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Filter Berdasarkan Poliklinik", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+End Sub
+
+Sub Dokter_Filter()
+'	msgbox("masuk")
+	wait 1
+	dokter = DataTable.Value("DOKTER_FILTER",dtLocalSheet)
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tipe Pembayaran").Click
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tipe Pembayaran").Click
+	wait 1
+	objkey.SendKeys "{TAB 2}"
+	wait 1
+	objkey.SendKeys (dokter)	
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Melakukan Filter Berdasarkan Dokter", "", compatibilityMode.Desktop, ReportStatus.Done)	
+	wait 1
+	objkey.SendKeys "{DOWN}"
+	objkey.SendKeys "{ENTER}"
+	wait 3
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Filter Berdasarkan Dokter", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+End Sub
+
+Sub TampilData_SemuaRawatJalan
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Semua Rawat Jalan").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Semua Rawat Jalan", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+Sub TampilData_TindakLanjut
+	wait 1
+	Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Tindak Lanjut").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Tindak Lanjut", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+Sub Filter_Berdasarkan_Tanggal()
+	tipe = Ucase(DataTable.Value("TIPE",dtLocalSheet))
+	wait 1
+		
+	wait 1
+	If tipe = "HARI INI" Then
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Semua Hari - FIlter").Click
+		wait 1
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Hari Ini").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Berdasarkan Filter Hari ini", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		wait 1
+	ElseIf tipe = "SEMUA HARI" Then
+		objkey.SendKeys "{F5}"
+		wait 10
+		wait 5
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Semua Hari - FIlter").Click
+		wait 1
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebButton("Semua Hari").Click
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Berdasarkan Filter Semua Hari", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		wait 1
+	ElseIf tipe = "TANGGAL" Then
+		tanggal = DataTable.Value("TANGGAL",dtLocalSheet)
+		Browser("Login | Klinik OS").Page("Semua Status | Klinik OS").WebEdit("Semua Hari - FIlter").Set tanggal
+		wait 5
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Data Berdasarkan Filter Tanggal yang Disesuaikan", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+		wait 1
+	End If
+End Sub

@@ -1,0 +1,139 @@
+﻿Set objkey = CreateObject("WScript.Shell")
+Sub Menunggu_Konfirmasi
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Menunggu Konfirmasi").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Semua Data Berdasarkan Menunggu Konfirmasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+Sub Menunggu_Verifikasi
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Menunggu Verifikasi").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Semua Data Berdasarkan Menunggu Verifikasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+Sub Dibatalkan
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Dibatalkan").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Menu | Klinik OS"), "Menampilkan Semua Data Berdasarkan Dibatalkan Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+
+Sub Tambah_Data_Reservasi(tipe)
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").Link("Reservasi_2").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik"), "Memasuki Form Tambah Data Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 3
+	If tipe = "TAMBAH" Then
+		If DataTable.Value("JENIS_KUNJUNGAN",dtLocalSheet) = "Kunjungan Sakit" Then
+			Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Kunjungan Sakit").Click
+		ElseIf DataTable.Value("JENIS_KUNJUNGAN",dtLocalSheet) = "Kunjungan Sehat" Then
+			Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Kunjungan Sehat").Click
+		End If
+		
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Arrow Drop Down Kunjungan").Click
+		wait 1
+		If DataTable.Value("JENIS_PERAWATAN",dtLocalSheet) = "Rawat Jalan" Then
+			objkey.SendKeys "{ENTER}"
+		ElseIf DataTable.Value("JENIS_PERAWATAN",dtLocalSheet) = "Rawat Inap" Then
+			objkey.SendKeys "{DOWN}"	
+			objkey.SendKeys "{ENTER}"
+		ElseIf DataTable.Value("JENIS_PERAWATAN",dtLocalSheet) = "Promotif Preventif" Then
+			objkey.SendKeys "{DOWN 2}"
+			objkey.SendKeys "{ENTER}"
+		End If
+		
+		wait 1
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Masukkan Nama Pasien").Set Datatable.Value("NAMA_PASIEN",dtLocalSheet)
+		wait 5
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Mugiwara Luffy01 Juni").Click
+		wait 5
+		
+	'	Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Arrow Drop Down Pembiayaan").Click
+	'	Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Arrow Drop Down Pembiayaan").Click
+		objkey.SendKeys "{TAB 5}"
+		wait 1
+		If DataTable.Value("PEMBIAYAAN",dtLocalSheet) = "Pribadi" Then
+			objkey.SendKeys "{DOWN}"	
+			objkey.SendKeys "{ENTER}"
+		ElseIf DataTable.Value("PEMBIAYAAN",dtLocalSheet) = "Penjamin" Then
+			'objkey.SendKeys "{DOWN}"	
+			objkey.SendKeys "{ENTER}"
+			wait 1
+			objkey.SendKeys "{TAB}"
+			wait 1
+			objkey.SendKeys (DataTable.Value("PENJAMIN",dtLocalSheet))
+			wait 1
+			objkey.SendKeys "{ENTER}"
+			wait 1
+			Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Nomor Member").Set DataTable.Value("NO_MEMBER",dtLocalSheet)
+			wait 1
+		End If
+		wait 1
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Nomor Rujukan").Set DataTable.Value("NO_RUJUKAN",dtLocalSheet)
+		wait 5
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Nama Poliklinik").Click
+		objkey.SendKeys (DataTable.Value("NAMA_POLIKLINIK",dtLocalSheet))
+		wait 3
+		objkey.SendKeys "{ENTER}"
+		wait 5
+	'	objkey.SendKeys "{TAB}"
+	'	wait 5
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Nama Dokter").Click
+		wait 3
+		objkey.SendKeys (DataTable.Value("NAMA_DOKTER",dtLocalSheet))
+		wait 3
+		objkey.SendKeys "{ENTER}"
+		wait 5
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Pilih Tanggal Konsultasi").Click
+		wait 1
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Tanggal 20").Click
+		wait 1
+	'	Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Pilih Jam Konsultasi 00:00").Highlight
+	'	Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("Pilih Jam Konsultasi 00:00").Click
+		objkey.SendKeys "{TAB}"
+		wait 3
+		objkey.SendKeys "{DOWN}"
+		objkey.SendKeys "{ENTER}"
+		wait 3
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("01:30 - Slot Waktu Dokter").SetTOProperty "text",DataTable.Value("SLOT_DOKTER",dtLocalSheet)
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebElement("01:30 - Slot Waktu Dokter").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik"), "Mengisi Data - Data yang Diperluhkan", "", compatibilityMode.Desktop, ReportStatus.Done)	
+		wait 3
+	End If
+	Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebButton("Simpan").Click	
+	wait 10
+	If Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Menunggu Konfirmasi").Exist(5) Then
+		wait 1
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Reservasi | Klinik OS"), "Berhasil Melakukan Tambah Data Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	Else
+		Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik").WebEdit("Masukkan Nama Pasien").Highlight
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Buat Reservasi | Klinik"), "Gagal Melakukan Tambah Data Reservasi", "", compatibilityMode.Desktop, ReportStatus.Failed)	
+	End If
+End Sub
+
+Sub Batal_Reservasi
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebElement("Tiga Titik").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Reservasi | Klinik OS"), "Memilih Data yang Akan di Batalkan Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Batalkan").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Reservasi | Klinik OS"), "Muncul Pop Up Untuk Mengisi Alasan Batal Reservasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Simpan").Click
+	wait 10
+	Browser("Login | Klinik OS").Page("Reservasi | Klinik OS").WebButton("Dibatalkan").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Reservasi | Klinik OS"), "Melakukan Check Apakah Data Reservasi yang di Batalkan Sukses Atau Tidak", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub

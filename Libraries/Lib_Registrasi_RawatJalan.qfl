@@ -1,0 +1,57 @@
+﻿Sub Selesai_Konsultasi
+	wait 1
+	Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebElement("Tiga Titik").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Memilih Data yang Ingin Di selesaikan Konsultasinya", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+	Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Selesaikan").Click
+	wait 1
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Muncul Pop up Untuk Konfirmasi dan Klik Button Selesai", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+	Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Selesai").Click
+	wait 1
+	Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Selesai Konsultasi").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Melakukan Check Untuk Memastikan Data Telah Masuk ke Bagian Selesai Konsultasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+End Sub
+
+Sub Tambah_Data_Registrasi(tipe)
+	wait 1
+	Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").Link("Registrasi").Click
+	wait 5
+	Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Membuka Form Tambah Registrasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	wait 1
+	If tipe = "TAMBAH" Then
+		
+	End If
+	wait 1
+	Browser("Login | Klinik OS").Page("Buat Registrasi | Klinik").WebButton("Simpan").Click
+	wait 10
+	If Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Menunggu Konsultasi").Exist(5) Then
+		
+	Else 
+		wait 1
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Gagal Melakukan Tambah Data Registrasi", "", compatibilityMode.Desktop, ReportStatus.Passed)		
+	End If
+End Sub
+
+Sub Registrasi_Menu()
+	Dim menu
+	wait 1
+	menu = Ucase(DataTable.Value("REGISTRASI_MENU", dtLocalSheet))
+
+	If menu = "SEMUA REGISTRASI" Then
+		Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Semua Registrasi").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Membuka Bagian Halaman Semua Registrasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf menu = "MENUNGGU KONSULTASI" Then
+		Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Menunggu Konsultasi").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Membuka Bagian Halaman Menunggu Konsultasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	ElseIf menu = "SELESAI KONSULTASI" Then
+		Browser("Login | Klinik OS").Page("Registrasi | Klinik OS").WebButton("Selesai Konsultasi").Click
+		wait 3
+		Call CaptureImageUFTV2(Browser("Login | Klinik OS").Page("Registrasi | Klinik OS"), "Membuka Bagian Halaman Selesai Konsultasi", "", compatibilityMode.Desktop, ReportStatus.Passed)	
+	End If
+End Sub
